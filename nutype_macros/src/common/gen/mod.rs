@@ -144,6 +144,20 @@ pub fn gen_impl_into_inner(type_name: &TypeName, inner_type: impl ToTokens) -> T
     }
 }
 
+pub fn gen_impl_const_get(type_name: &TypeName, inner_type: impl ToTokens, has_copy_trait: bool) -> TokenStream {
+    if !has_copy_trait {
+        return Default::default();
+    }
+    quote! {
+        impl #type_name {
+            #[inline]
+            pub const fn get(self) -> #inner_type {
+                self.0
+            }
+        }
+    }
+}
+
 pub trait GenerateNewtype {
     type Sanitizer;
     type Validator;
@@ -259,6 +273,7 @@ pub trait GenerateNewtype {
         inner_type: &Self::InnerType,
         guard: &Guard<Self::Sanitizer, Self::Validator>,
         new_unchecked: NewUnchecked,
+        has_copy_trait: bool,
     ) -> TokenStream {
         let impl_new = match guard {
             Guard::WithoutValidation { sanitizers } => {
@@ -270,11 +285,13 @@ pub trait GenerateNewtype {
             } => Self::gen_new_with_validation(type_name, inner_type, sanitizers, validators),
         };
         let impl_into_inner = gen_impl_into_inner(type_name, inner_type);
+        let impl_const_get = gen_impl_const_get(type_name, inner_type, has_copy_trait);
         let impl_new_unchecked = gen_new_unchecked(type_name, inner_type, new_unchecked);
 
         quote! {
             #impl_new
             #impl_into_inner
+            #impl_const_get
             #impl_new_unchecked
         }
     }
@@ -299,8 +316,9 @@ pub trait GenerateNewtype {
         } = params;
 
         let module_name = gen_module_name_for_type(&type_name);
+        let has_copy_trait = traits.iter().any(|t| t.is_copy());
         let implementation =
-            Self::gen_implementation(&type_name, &inner_type, &guard, new_unchecked);
+            Self::gen_implementation(&type_name, &inner_type, &guard, new_unchecked, has_copy_trait);
 
         let maybe_error_type_name: Option<ErrorTypeName> = match guard {
             Guard::WithoutValidation { .. } => None,

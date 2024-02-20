@@ -301,6 +301,9 @@ pub type SpannedDeriveTrait = SpannedItem<DeriveTrait>;
 pub trait TypeTrait {
     // If this is FromStr variant?
     fn is_from_str(&self) -> bool;
+
+    // If this is Copy variant?
+    fn is_copy(&self) -> bool;
 }
 
 /// The flag the indicates that a newtype will be generated with extra constructor,

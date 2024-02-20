@@ -70,6 +70,10 @@ impl TypeTrait for FloatDeriveTrait {
     fn is_from_str(&self) -> bool {
         self == &FloatDeriveTrait::FromStr
     }
+
+    fn is_copy(&self) -> bool {
+        self == &FloatDeriveTrait::Copy
+    }
 }
 
 pub type FloatRawGuard<T> = RawGuard<SpannedFloatSanitizer<T>, SpannedFloatValidator<T>>;

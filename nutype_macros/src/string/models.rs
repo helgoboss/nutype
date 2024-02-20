@@ -81,6 +81,10 @@ impl TypeTrait for StringDeriveTrait {
     fn is_from_str(&self) -> bool {
         self == &Self::FromStr
     }
+
+    fn is_copy(&self) -> bool {
+        false
+    }
 }
 
 pub type StringRawGuard = RawGuard<SpannedStringSanitizer, SpannedStringValidator>;

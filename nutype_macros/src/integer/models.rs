@@ -70,6 +70,10 @@ impl TypeTrait for IntegerDeriveTrait {
     fn is_from_str(&self) -> bool {
         self == &IntegerDeriveTrait::FromStr
     }
+
+    fn is_copy(&self) -> bool {
+        self == &IntegerDeriveTrait::Copy
+    }
 }
 
 pub type IntegerRawGuard<T> = RawGuard<SpannedIntegerSanitizer<T>, SpannedIntegerValidator<T>>;

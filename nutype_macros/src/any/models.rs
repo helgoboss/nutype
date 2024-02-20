@@ -55,6 +55,10 @@ impl TypeTrait for AnyDeriveTrait {
     fn is_from_str(&self) -> bool {
         self == &AnyDeriveTrait::FromStr
     }
+
+    fn is_copy(&self) -> bool {
+        self == &AnyDeriveTrait::Copy
+    }
 }
 
 pub type AnyRawGuard = RawGuard<SpannedAnySanitizer, SpannedAnyValidator>;
